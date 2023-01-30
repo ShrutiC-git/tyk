@@ -1,0 +1,25 @@
+version: "3.8"
+
+x-uffizzi:
+  ingress:
+    service: tyk
+    port: 8080
+
+services:
+
+  tyk:
+    image: "${TYK_IMAGE}"
+    volumes:
+      - ./tyk.conf.example:/opt/tyk-gateway/tyk.conf
+      - ./apps:/opt/tyk-gateway/apps
+      - ./middleware:/opt/tyk-gateway/middleware
+      - ./certs:/opt/tyk-gateway/certs
+    deploy:
+      resources:
+        limits:
+          memory: 4000M
+
+  redis:
+    image: redis
+    ports:
+    - 6379:6379
