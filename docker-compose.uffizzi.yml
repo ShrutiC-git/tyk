@@ -15,7 +15,7 @@ services:
     - TYK_DB_TYKAPI_PORT=8080
     - TYK_DB_TYKAPI_SECRET=352d20ee67be67f6340b4c0605b044b7
     - TYK_DB_MONGOURL=mongodb://127.0.0.1:27017/tyk
-    - TYK_DB_MONGOUSESSL=false
+    - TYK_DB_MONGOUSESSL=true
     
 
   tyk:
