@@ -17,7 +17,8 @@ services:
     entrypoint: /bin/sh
     command: 
     - "-c"
-    - "export TYK_DB_MONGOURL=mongodb://127.0.0.1:27017/tyk && \
+    - "sleep 15 && \
+       export TYK_DB_MONGOURL=mongodb://127.0.0.1:27017/tyk && \
        export TYK_DB_MONGOUSESSL=false && \
        /opt/tyk-dashboard/tyk-analytics"  
     
