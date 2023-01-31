@@ -1,4 +1,60 @@
-version: "3.8"
+# version: "3.8"
+
+# x-uffizzi:
+#   ingress:
+#     service: tyk-dashboard
+#     port: 3000
+
+# services:
+
+#   tyk-dashboard:
+#     image: tykio/tyk-dashboard
+#     volumes:
+#     - ./dashboard-config:/opt/tyk-dashboard/
+#     environment:
+#     - TYK_DB_LISTENPORT=3000
+#     - TYK_DB_TYKAPI_HOST=localhost
+#     - TYK_DB_TYKAPI_PORT=8080
+#     - TYK_DB_TYKAPI_SECRET=352d20ee67be67f6340b4c0605b044b7
+#     - TYK_DB_MONGOURL=mongodb://admin:password@localhost:27017/tyk_analytics
+#     - TYK_DB_MONGOUSESSL=false
+#     - TYK_DB_MONGOSSLINSECURESKIPVERIFY=false
+#     - TYK_DB_MONGOBATCHSIZE=2000
+    
+    
+#   tyk:
+#     image: "${TYK_IMAGE}"
+#     ports:
+#       - '8080:8080'
+#     volumes:
+#       - ./apps:/opt/tyk-gateway/apps
+#       - ./middleware:/opt/tyk-gateway/middleware
+#       - ./certs:/opt/tyk-gateway/certs
+#     deploy:
+#       resources:
+#         limits:
+#           memory: 2000M
+
+#   redis:
+#     image: redis
+  
+#   mongo:
+#     image: mongo:latest
+#     environment:
+#       - MONGO_INITDB_ROOT_USERNAME=admin
+#       - MONGO_INITDB_ROOT_PASSWORD=password
+#     deploy:
+#       resources:
+#         limits:
+#           memory: 2000M
+#     volumes:
+#       - mongodata:/data/db    
+  
+# volumes:
+#     mongodata:    
+
+
+version: '3.9'
 
 x-uffizzi:
   ingress:
@@ -6,44 +62,93 @@ x-uffizzi:
     port: 3000
 
 services:
-
+  
   tyk-dashboard:
-    image: tykio/tyk-dashboard
+    image: tykio/tyk-dashboard:v4.3
     environment:
-    - TYK_DB_LISTENPORT=3000
-    - TYK_DB_TYKAPI_HOST=localhost
-    - TYK_DB_TYKAPI_PORT=8080
-    - TYK_DB_TYKAPI_SECRET=352d20ee67be67f6340b4c0605b044b7
-    volumes:
-      - ./dashboard-config:/opt/tyk-dashboard
-    entrypoint: /bin/sh
-    command: 
-    - "-c"
-    - "/opt/tyk-dashboard/tyk-analytics --conf=/opt/tyk-dashboard/tyk_analytics.conf"  
-    
-
-  tyk:
-    image: "${TYK_IMAGE}"
+      - TYK_DB_STORAGE_MAIN_TYPE=postgres
+      - TYK_DB_STORAGE_MAIN_CONNECTIONSTRING=user=postgres password=password database='tyk_analytics' host=localhost port=5432
+      - TYK_DB_LISTENPORT=3000
+      - TYK_DB_ADMINSECRET=12345
+      - TYK_DB_TYKAPI_HOST=http://localhost
+      - TYK_DB_TYKAPI_PORT=8080
+      - TYK_DB_TYKAPI_SECRET=352d20ee67be67f6340b4c0605b044b7
+      - TYK_DB_NODESECRET=352d20ee67be67f6340b4c0605b044b7
+      - TYK_DB_REDISHOST=127.0.0.1
+      - TYK_DB_REDISPORT=6379
+      - TYK_DB_REDISPASSWORD=
+      - TYK_DB_ENABLECLUSTER=false
+      - TYK_DB_REDISDATABASE=0
+      - TYK_DB_ENABLEHASHEDKEYSLISTING=true
+      - TYK_DB_ENABLEUPDATEKEYBYHASH=true
+      - TYK_DB_ENABLEAGGREGATELOOKUPS=true
+      - TYK_DB_MONGOURL=mongodb://admin:password@localhost:27017/tyk_analytics?authSource=admin
+      - TYK_DB_MONGOUSESSL=false
     ports:
-      - '8080:8080'
-    volumes:
-      - ./apps:/opt/tyk-gateway/apps
-      - ./middleware:/opt/tyk-gateway/middleware
-      - ./certs:/opt/tyk-gateway/certs
+      - "3000:3000"
     deploy:
       resources:
         limits:
-          memory: 2000M
+          memory: 4000M  
 
-  redis:
-    image: redis
-  
-  sql-server-db:
-    container_name: sql-server-db
-    image: microsoft/mssql-server-linux:2017-latest
+  tyk-gateway:
+    image: "${TYK_IMAGE}"
     ports:
-      - "1433:1433"
+      - "8080:8080"
+    environment:
+      - TYK_GW_LISTENPORT=8080
+      - TYK_GW_SECRET=352d20ee67be67f6340b4c0605b044b7
+      - TYK_GW_NODESECRET=352d20ee67be67f6340b4c0605b044b7  
+      - TYK_GW_ENABLEHASHEDKEYSLISTING=true
+    deploy:
+      resources:
+        limits:
+          memory: 2000M  
+
+  tyk-redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-db:/data  
+    deploy:
+      resources:
+        limits:
+          memory: 500M    
+
+  tyk-postgres:
+    image: postgres:latest
+    container_name: tyk-postgres
+    environment:
+      - POSTGRES_DB=tyk_analytics
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - PGDATA=/tmp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-db:/var/lib/postgresql/data  
+    deploy:
+      resources:
+        limits:
+          memory: 500M   
+  
+  
+  tyk-mongo:
+    image: mongo:4.0.25
+    ports:
+      - "27019:27019"
+    # volumes:
+    #   - mongo_data:/data/db 
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password   
+    deploy:
+      resources:
+        limits:
+          memory: 1000M            
   
 volumes:
-    mongodata:    
-    
+  redis-db:
+  db-data: 
+  postgres-db:  
