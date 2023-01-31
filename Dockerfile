@@ -38,12 +38,12 @@ RUN apt update && apt install build-essential zlib1g-dev libncurses5-dev libgdbm
 ## This just installs whatever is is bullseye, makes docker build (fast/small)-(er)
 RUN	apt install python3 -y
 
-## This runs python code slower, but the process finishes quicker
-# RUN	tar -xf Python-${PYTHON_VERSION}.tar.xz && ls -la && \
-#	cd Python-${PYTHON_VERSION}/ && \
-#	./configure --enable-shared && make build_all && \
-#	make altinstall && \
-#	ldconfig $PWD
+# This runs python code slower, but the process finishes quicker
+RUN	tar -xf Python-${PYTHON_VERSION}.tar.xz && ls -la && \
+	cd Python-${PYTHON_VERSION}/ && \
+	./configure --enable-shared && make build_all && \
+	make altinstall && \
+	ldconfig $PWD
 
 ## This runs python code faster, but is expensive to build and runs regression tests
 # RUN	tar -xf Python-${PYTHON_VERSION}.tar.xz && ls -la && \
@@ -56,7 +56,6 @@ RUN	apt install python3 -y
 RUN find /tmp -type f -delete
 
 # Build gateway
-
 RUN mkdir /opt/tyk-gateway
 WORKDIR /opt/tyk-gateway
 ADD . /opt/tyk-gateway
@@ -65,8 +64,9 @@ RUN make build && go clean -modcache
 
 COPY tyk.conf.example tyk.conf
 
-RUN 	echo "Tyk: $(/opt/tyk-gateway/tyk --version 2>&1)" && \
+RUN echo "Tyk: $(/opt/tyk-gateway/tyk --version 2>&1)" && \
 	echo "Go: $(go version)" && \
 	echo "Python: $(python3 --version)"
 
 ENTRYPOINT ["/opt/tyk-gateway/tyk"]
+CMD [ "--conf=/opt/tyk-gateway/tyk.conf" ]
