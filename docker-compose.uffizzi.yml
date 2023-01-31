@@ -2,24 +2,24 @@ version: "3.8"
 
 x-uffizzi:
   ingress:
-    service: tyk
-    port: 8080
+    service: tyk-dashboard
+    port: 3000
 
 services:
 
-  # tyk-dashboard:
-  #   image: tykio/tyk-dashboard
-  #   environment:
-  #   - TYK_DB_LISTENPORT=3000
-  #   - TYK_DB_TYKAPI_HOST=localhost
-  #   - TYK_DB_TYKAPI_PORT=8080
-  #   - TYK_DB_TYKAPI_SECRET=352d20ee67be67f6340b4c0605b044b7
-  #   entrypoint: /bin/sh
-  #   command: 
-  #   - "-c"
-  #   - "export TYK_DB_MONGOURL=mongodb://127.0.0.1:27017/tyk && \
-  #      export TYK_DB_MONGOUSESSL=false && \
-  #      /opt/tyk-dashboard/tyk-analytics"  
+  tyk-dashboard:
+    image: tykio/tyk-dashboard
+    environment:
+    - TYK_DB_LISTENPORT=3000
+    - TYK_DB_TYKAPI_HOST=localhost
+    - TYK_DB_TYKAPI_PORT=8080
+    - TYK_DB_TYKAPI_SECRET=352d20ee67be67f6340b4c0605b044b7
+    volumes:
+      - ./dashboard-config:/opt/tyk-dashboard
+    entrypoint: /bin/sh
+    command: 
+    - "-c"
+    - "/opt/tyk-dashboard/tyk-analytics --conf=/opt/tyk-dashboard/tyk_analytics.conf"  
     
 
   tyk:
@@ -38,16 +38,11 @@ services:
   redis:
     image: redis
   
-  # mongo:
-  #   image: mongo:latest
-    # ports:
-    #   - '27017:27017'
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         memory: 4000M
-  #   volumes:
-  #     - mongodata:/data/db    
+  sql-server-db:
+    container_name: sql-server-db
+    image: microsoft/mssql-server-linux:2017-latest
+    ports:
+      - "1433:1433"
   
 volumes:
     mongodata:    
