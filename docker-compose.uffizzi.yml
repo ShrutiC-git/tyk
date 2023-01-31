@@ -2,10 +2,19 @@ version: "3.8"
 
 x-uffizzi:
   ingress:
-    service: tyk
+    service: tyk-dashboard
     port: 3000
 
 services:
+
+  tyk-dashboard:
+    image: tykio/tyk-dashboard
+    environment:
+    - TYK_DB_LISTENPORT=3000
+    - TYK_DB_TYKAPI_HOST=localhost
+    - TYK_DB_TYKAPI_PORT=8080
+    - TYK_DB_TYKAPI_SECRET=352d20ee67be67f6340b4c0605b044b7
+    
 
   tyk:
     image: "${TYK_IMAGE}"
@@ -17,7 +26,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 4000M
+          memory: 2000M
 
   redis:
     image: redis
