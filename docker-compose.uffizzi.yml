@@ -24,8 +24,9 @@ services:
 
   tyk:
     image: "${TYK_IMAGE}"
+    ports:
+      - '8080:8080'
     volumes:
-      # - ./tyk.conf.example:/opt/tyk-gateway/tyk.conf
       - ./apps:/opt/tyk-gateway/apps
       - ./middleware:/opt/tyk-gateway/middleware
       - ./certs:/opt/tyk-gateway/certs
@@ -37,16 +38,16 @@ services:
   redis:
     image: redis
   
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    deploy:
-      resources:
-        limits:
-          memory: 4000M
-    volumes:
-      - mongodata:/data/db    
+  # mongo:
+  #   image: mongo:latest
+    # ports:
+    #   - '27017:27017'
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 4000M
+  #   volumes:
+  #     - mongodata:/data/db    
   
 volumes:
     mongodata:    
