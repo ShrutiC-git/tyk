@@ -15,7 +15,10 @@ services:
     - TYK_DB_TYKAPI_PORT=8080
     - TYK_DB_TYKAPI_SECRET=352d20ee67be67f6340b4c0605b044b7
     - TYK_DB_MONGOUSESSL=true
-    command: "export TYK_DB_MONGOURL=mongodb://$$UFFIZZI_URL:27017/tyk"  
+    entrypoint: /bin/sh
+    command: 
+    - "-c"
+    - "TYK_DB_MONGOURL=mongodb://$$UFFIZZI_URL:27017/tyk /opt/tyk-dashboard/tyk-analytics"  
     
 
   tyk:
