@@ -10,7 +10,7 @@ services:
   tyk:
     image: "${TYK_IMAGE}"
     volumes:
-      - ./tyk.conf.example:/opt/tyk-gateway/tyk.conf
+      # - ./tyk.conf.example:/opt/tyk-gateway/tyk.conf
       - ./apps:/opt/tyk-gateway/apps
       - ./middleware:/opt/tyk-gateway/middleware
       - ./certs:/opt/tyk-gateway/certs
