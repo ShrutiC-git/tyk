@@ -1,6 +1,5 @@
 {
   "listen_address": "https://pr-1-deployment-12843-tyk.app.uffizzi.com",
-  "listen_port": "",
   "secret": "352d20ee67be67f6340b4c0605b044b7",
   "template_path": "/opt/tyk-gateway/templates",
   "use_db_app_configs": false,
