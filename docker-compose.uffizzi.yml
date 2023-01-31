@@ -3,14 +3,12 @@ version: "3.8"
 x-uffizzi:
   ingress:
     service: tyk
-    port: 8080
+    port: 3000
 
 services:
 
   tyk:
     image: "${TYK_IMAGE}"
-    ports:
-    - 8080:8080
     volumes:
       # - ./tyk.conf.example:/opt/tyk-gateway/tyk.conf
       - ./apps:/opt/tyk-gateway/apps
