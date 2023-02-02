@@ -2,8 +2,8 @@ version: '3.9'
 
 x-uffizzi:
   ingress:
-    service: tyk-dashboard
-    port: 3000
+    service: nginx
+    port: 8081
 
 services:
   
@@ -85,3 +85,8 @@ services:
       resources:
         limits:
           memory: 1000M
+          
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx-uffizzi:/etc/nginx        
