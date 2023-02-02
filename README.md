@@ -15,7 +15,6 @@ Built from the ground up to be the fastest API gateway on the planet. It does no
 ![image](https://user-images.githubusercontent.com/14009/109156132-8ae9d980-7781-11eb-88d7-0b77c753a9ca.png)
 
 
-
 # Open Source API Gateway Features
 
 Use any protocol: REST, SOAP, [GraphQL](https://tyk.io/docs/tyk-apis/tyk-gateway-api/api-definition-objects/graphql/), [gRPC](https://tyk.io/docs/key-concepts/grpc-proxy/), and [TCP](https://tyk.io/docs/key-concepts/tcp-proxy/).
