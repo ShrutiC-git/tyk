@@ -86,7 +86,7 @@ services:
         limits:
           memory: 1000M
           
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./nginx-uffizzi:/etc/nginx        
+  # nginx:
+  #   image: nginx:alpine
+  #   volumes:
+  #     - ./nginx-uffizzi:/etc/nginx        
